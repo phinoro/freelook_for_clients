@@ -4,6 +4,10 @@ A client-side mod for [Quilt](https://quiltmc.org) and [Fabric](https://fabricmc
 
 This is NOT a freecam mod! Freecam lets you detach your camera from your player and move it around as though you were in spectator mode, whereas freelook only serves to decouple the direction you're looking from the direction you're aiming.
 
+## Development Status
+
+The mod is not in active development, but issues and PRs will be handled.
+
 ## Comparison to other freelook mods
 
 As of writing, I could find two other freelook mods for Fabric/Quilt on Modrinth. The following table compares the features of these mods with each other and this mod:
