@@ -1,29 +1,29 @@
 package com.pixelstorm.freelook_for_clients;
 
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.option.StickyKeyBinding;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.ToggleKeyMapping;
 
 public class FreelookForClients implements ClientModInitializer {
 
-	private static final KeyBinding.Category FREELOOK_CATEGORY = KeyBinding.Category.create(Identifier.of("freelook_for_clients"));
+	private static final KeyMapping.Category FREELOOK_CATEGORY = KeyMapping.Category.register(Identifier.parse("freelook_for_clients"));
 
-	public static KeyBinding holdFreeLookKeybind;
+	public static KeyMapping holdFreeLookKeybind;
 
-	public static KeyBinding toggleFreeLookKeybind;
+	public static KeyMapping toggleFreeLookKeybind;
 
 	@Override
 	public void onInitializeClient() {
-		holdFreeLookKeybind = KeyBindingHelper.registerKeyBinding(
-			new KeyBinding("key.freelook_for_clients.hold", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_WORLD_1,
+		holdFreeLookKeybind = KeyMappingHelper.registerKeyMapping(
+			new KeyMapping("key.freelook_for_clients.hold", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_WORLD_1,
 				FREELOOK_CATEGORY));
-		toggleFreeLookKeybind = KeyBindingHelper.registerKeyBinding(
-			new StickyKeyBinding("key.freelook_for_clients.toggle", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,
+		toggleFreeLookKeybind = KeyMappingHelper.registerKeyMapping(
+			new ToggleKeyMapping("key.freelook_for_clients.toggle", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,
 				FREELOOK_CATEGORY, () -> true, true));
 	}
 }

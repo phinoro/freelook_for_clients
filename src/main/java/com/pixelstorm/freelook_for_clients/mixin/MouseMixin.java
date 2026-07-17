@@ -1,5 +1,6 @@
 package com.pixelstorm.freelook_for_clients.mixin;
 
+import net.minecraft.client.MouseHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -8,18 +9,17 @@ import com.pixelstorm.freelook_for_clients.CanFreelook;
 import com.pixelstorm.freelook_for_clients.FreelookForClients;
 import com.pixelstorm.freelook_for_clients.FreelookState;
 
-import net.minecraft.client.Mouse;
-import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.player.LocalPlayer;
 
-@Mixin(Mouse.class)
+@Mixin(MouseHandler.class)
 public abstract class MouseMixin {
-	@Redirect(method = "updateMouse", at = @At(value = "INVOKE", target = "net/minecraft/client/network/ClientPlayerEntity.changeLookDirection(DD)V"))
-	private void changeFreelookDirection(ClientPlayerEntity self, double cursorDeltaX, double cursorDeltaY) {
+	@Redirect(method = "turnPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;turn(DD)V"))
+	private void changeFreelookDirection(LocalPlayer self, double cursorDeltaX, double cursorDeltaY) {
 		// Handle mouse movement, keybinds and starting/stopping freelooking
 		CanFreelook freelooker = (CanFreelook) self;
 
-		if (FreelookForClients.holdFreeLookKeybind.isPressed()
-				|| FreelookForClients.toggleFreeLookKeybind.isPressed()) {
+		if (FreelookForClients.holdFreeLookKeybind.isDown()
+				|| FreelookForClients.toggleFreeLookKeybind.isDown()) {
 			freelooker.setFreelookState(FreelookState.Freelooking);
 		}else{
 			freelooker.setFreelookState(FreelookState.NotFreelooking);
@@ -30,11 +30,11 @@ public abstract class MouseMixin {
 				freelooker.changeFreelookDirection(cursorDeltaX, cursorDeltaY);
 				break;
 			case NotFreelooking:
-				self.changeLookDirection(cursorDeltaX, cursorDeltaY);
+				self.turn(cursorDeltaX, cursorDeltaY);
 				// When not freelooking, sync pitch & yaw so camera doesn't snap to some other
 				// orientation when activating freelooking
-				freelooker.setFreelookPitch(self.getPitch());
-				freelooker.setFreelookYaw(self.getYaw());
+				freelooker.setFreelookPitch(self.getXRot());
+				freelooker.setFreelookYaw(self.getYRot());
 				break;
 		}
 	}

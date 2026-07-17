@@ -7,24 +7,29 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import com.pixelstorm.freelook_for_clients.CanFreelook;
 
-import net.minecraft.client.render.Camera;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.Camera;
+import net.minecraft.world.entity.Entity;
+import org.spongepowered.asm.mixin.injection.Slice;
 
 @Mixin(Camera.class)
 public abstract class CameraMixin {
 	@Shadow
-	private Entity focusedEntity;
+	private Entity entity;
 
 	@Shadow
-	protected abstract void setRotation(float yaw, float pitch);
+	protected abstract void setRotation(float yRot, float xRot);
 
-	@Redirect(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/Camera;setRotation(FF)V", ordinal = 1))
-	private void setFreelookRotation(Camera self, float yaw, float pitch) {
-		if (focusedEntity instanceof CanFreelook freelooker
+	@Redirect(
+		method = "alignWithEntity",
+		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Camera;setRotation(FF)V"),
+		slice= @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;isPassenger()Z"),
+			to = @At(value = "INVOKE", target = "Lnet/minecraft/client/CameraType;isFirstPerson()Z")))
+	private void setFreelookRotation(Camera self, float yRot, float xRot) {
+		if (entity instanceof CanFreelook freelooker
 				&& freelooker.getFreelookState().isFreelookingOrInterpolating()) {
 			this.setRotation(freelooker.getFreelookYaw(), freelooker.getFreelookPitch());
 		} else {
-			this.setRotation(yaw, pitch);
+			this.setRotation(yRot, xRot);
 		}
 	}
 }
