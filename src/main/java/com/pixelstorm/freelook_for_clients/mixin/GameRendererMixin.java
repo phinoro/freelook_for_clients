@@ -25,7 +25,7 @@ public abstract class GameRendererMixin {
 	public abstract Camera getMainCamera();
 
 
-	@Inject(method = "renderItemInHand", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;renderHandsWithItems(FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/player/LocalPlayer;I)V"))
+	@Inject(method = "renderItemInHand", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;submitHandsWithItems(FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/player/LocalPlayer;I)V"))
 	private void modifyHandMatrix(CallbackInfo ci, @Local(argsOnly = true, name = "deltaPartialTick") float deltaPartialTick, @Local(name = "poseStack") LocalRef<PoseStack> poseStackLocalRef) {
 		PoseStack matrices = poseStackLocalRef.get();
 
